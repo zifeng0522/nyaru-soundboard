@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <title>Nyaru Soundboard</title>
 
@@ -11,423 +11,720 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <style>
 
-/* =========================
+/* =========================================
    🌌 基本設定
-========================= */
+========================================= */
 
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  color: white;
-  overflow-x: hidden;
-  background: black;
+*{
+  box-sizing:border-box;
 }
 
-/* =========================
-   🌌 幻燈片背景
-========================= */
-
-.bg-slideshow {
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  overflow: hidden;
+html{
+  scroll-behavior:smooth;
 }
 
-/* 背景圖片 */
-.bg-slide {
-  position: absolute;
-  inset: 0;
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  color:white;
+  overflow-x:hidden;
+  background:black;
+}
 
-  background-size: cover;
-  background-position: center;
+/* =========================================
+   ✨ 滑鼠光暈
+========================================= */
 
-  opacity: 0;
+.cursor-glow{
+
+  position:fixed;
+
+  width:380px;
+  height:380px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,0.14) 0%,
+      rgba(255,255,255,0.06) 30%,
+      transparent 70%
+    );
+
+  pointer-events:none;
+
+  z-index:-1;
+
+  transform:
+    translate(-50%, -50%);
 
   transition:
-    opacity 2s ease-in-out;
+    transform .08s linear;
 
-  transform: scale(1.05);
+  mix-blend-mode:screen;
+}
 
-  animation:
-    floatingBg 18s ease-in-out infinite;
+/* =========================================
+   🌌 背景幻燈片
+========================================= */
 
-  filter: blur(1px);
+.bg-slideshow{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+}
+
+.bg-slide{
+
+  position:absolute;
+  inset:0;
+
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+
+  opacity:0;
+
+  transform:scale(1);
+
+  transition:
+    opacity 2s ease;
+
+  filter:
+    brightness(.9)
+    blur(.5px);
 
   will-change:
-    opacity,
-    transform;
-
-  backface-visibility: hidden;
+    transform,
+    opacity;
 }
 
-/* 顯示中的背景 */
-.bg-slide.active {
-  opacity: 1;
+.bg-slide.active{
+
+  opacity:1;
+
+  animation:
+    kenburns 18s ease-in-out forwards;
 }
 
-/* 漂浮動畫 */
-@keyframes floatingBg {
+/* Ken Burns */
 
-  0% {
+@keyframes kenburns{
+
+  0%{
+    transform:
+      scale(1)
+      translate3d(0,0,0);
+  }
+
+  25%{
     transform:
       scale(1.05)
-      translateY(0px);
+      translate3d(-1%,-1%,0);
   }
 
-  50% {
+  50%{
     transform:
-      scale(1.1)
-      translateY(-10px);
+      scale(1.08)
+      translate3d(1%,-2%,0);
   }
 
-  100% {
+  75%{
     transform:
-      scale(1.05)
-      translateY(0px);
+      scale(1.12)
+      translate3d(-1%,1%,0);
+  }
+
+  100%{
+    transform:
+      scale(1.15)
+      translate3d(1%,0%,0);
   }
 }
 
-/* =========================
+/* =========================================
    🌑 深色遮罩
-========================= */
+========================================= */
 
-.bg-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
+.bg-overlay{
+
+  position:fixed;
+  inset:0;
+  z-index:-3;
 
   background:
     linear-gradient(
-      rgba(10, 15, 25, 0.72),
-      rgba(10, 15, 25, 0.82)
+      rgba(8,12,20,.68),
+      rgba(8,12,20,.84)
     );
 }
 
-/* =========================
-   ✨ 漂浮粒子
-========================= */
+/* =========================================
+   ✨ 粒子
+========================================= */
 
-.particles {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  z-index: -1;
-  pointer-events: none;
+.particles{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:-2;
+  pointer-events:none;
 }
 
-.particle {
-  position: absolute;
-  bottom: -20px;
+.particle{
 
-  width: 6px;
-  height: 6px;
+  position:absolute;
+  bottom:-20px;
+
+  width:6px;
+  height:6px;
 
   background:
-    rgba(255,255,255,0.35);
+    rgba(255,255,255,.35);
 
-  border-radius: 50%;
+  border-radius:50%;
 
   animation:
     floatUp linear infinite;
 }
 
-@keyframes floatUp {
+@keyframes floatUp{
 
-  from {
-    transform: translateY(0);
-    opacity: 0;
+  from{
+    transform:translateY(0);
+    opacity:0;
   }
 
-  10% {
-    opacity: 1;
+  10%{
+    opacity:1;
   }
 
-  to {
-    transform: translateY(-120vh);
-    opacity: 0;
+  to{
+    transform:translateY(-120vh);
+    opacity:0;
   }
 }
 
-/* =========================
+/* =========================================
    🎀 Header
-========================= */
+========================================= */
 
-.topbar {
+.topbar{
 
-  margin: 14px;
+  position:sticky;
+  top:12px;
+  z-index:50;
 
-  padding: 16px 20px;
+  margin:14px;
+
+  padding:18px 20px;
+
+  border-radius:28px;
 
   background:
-    rgba(255,255,255,0.12);
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.16),
+      rgba(255,255,255,.08)
+    );
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
 
   border:
-    1px solid rgba(255,255,255,0.18);
-
-  border-radius: 24px;
+    1px solid rgba(255,255,255,.18);
 
   box-shadow:
-    0 8px 32px rgba(0,0,0,0.25);
-
-  position: sticky;
-  top: 10px;
-  z-index: 20;
+    0 8px 40px rgba(0,0,0,.25),
+    inset 0 1px 1px rgba(255,255,255,.08);
 }
 
-/* 頂部排列 */
-.topbar-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* 動態玻璃光澤 */
 
-/* 標題 */
-.topbar h1 {
+.topbar::before{
 
-  margin: 0;
+  content:"";
 
-  font-size: 30px;
-  font-weight: 700;
+  position:absolute;
+  inset:0;
 
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  text-shadow:
-    0 0 12px rgba(255,255,255,0.4);
-}
-
-.title-icon {
-  font-size: 34px;
-}
-
-/* =========================
-   🌐 社群按鈕
-========================= */
-
-.social-bar {
-  display: flex;
-  gap: 14px;
-}
-
-.social-bar a {
-
-  width: 42px;
-  height: 42px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  color: white;
-  font-size: 18px;
-
-  background:
-    rgba(255,255,255,0.08);
-
-  transition: all 0.25s ease;
-}
-
-.social-bar a:hover {
-
-  transform:
-    translateY(-3px)
-    scale(1.08);
-
-  background:
-    rgba(255,255,255,0.18);
-
-  box-shadow:
-    0 0 16px rgba(255,255,255,0.3);
-}
-
-/* =========================
-   🔍 搜尋欄
-========================= */
-
-.search-box {
-  margin-top: 14px;
-}
-
-.search-box input {
-
-  width: 100%;
-
-  padding: 14px 18px;
-
-  border: none;
-  outline: none;
-
-  border-radius: 999px;
-
-  background:
-    rgba(255,255,255,0.15);
-
-  backdrop-filter: blur(10px);
-
-  color: white;
-  font-size: 15px;
-
-  box-sizing: border-box;
-
-  transition: 0.25s;
-}
-
-.search-box input::placeholder {
-  color: rgba(255,255,255,0.7);
-}
-
-.search-box input:focus {
-
-  background:
-    rgba(255,255,255,0.22);
-
-  box-shadow:
-    0 0 0 3px rgba(255,255,255,0.15);
-}
-
-/* =========================
-   🎵 音效區
-========================= */
-
-.grid {
-
-  padding: 18px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fill, minmax(140px, 1fr));
-
-  gap: 18px;
-}
-
-/* 音效按鈕 */
-.sound-btn {
-
-  position: relative;
-
-  border:
-    1px solid rgba(255,255,255,0.15);
-
-  background:
-    rgba(255,255,255,0.12);
-
-  backdrop-filter: blur(14px);
-
-  color: white;
-
-  padding: 20px 12px;
-
-  border-radius: 20px;
-
-  cursor: pointer;
-
-  overflow: hidden;
-
-  transition: all 0.28s ease;
-
-  box-shadow:
-    0 8px 20px rgba(0,0,0,0.2);
-
-  font-size: 14px;
-}
-
-/* 光澤效果 */
-.sound-btn::before {
-
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: -120%;
-
-  width: 80%;
-  height: 100%;
+  border-radius:inherit;
 
   background:
     linear-gradient(
       120deg,
       transparent,
-      rgba(255,255,255,0.25),
+      rgba(255,255,255,.08),
       transparent
     );
 
-  transition: 0.6s;
+  animation:
+    glassMove 8s linear infinite;
 }
 
-.sound-btn:hover::before {
-  left: 130%;
+@keyframes glassMove{
+
+  from{
+    transform:translateX(-100%);
+  }
+
+  to{
+    transform:translateX(100%);
+  }
 }
 
-/* Hover */
-.sound-btn:hover {
+.topbar-row{
 
-  transform:
-    translateY(-5px)
-    scale(1.03);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.topbar h1{
+
+  margin:0;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-size:30px;
+  font-weight:700;
+
+  text-shadow:
+    0 0 12px rgba(255,255,255,.35);
+}
+
+.title-icon{
+  font-size:34px;
+}
+
+/* =========================================
+   🌐 社群
+========================================= */
+
+.social-bar{
+  display:flex;
+  gap:14px;
+}
+
+.social-bar a{
+
+  width:42px;
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  color:white;
+  text-decoration:none;
 
   background:
-    rgba(255,255,255,0.18);
+    rgba(255,255,255,.08);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  transition:.25s;
+}
+
+.social-bar a:hover{
+
+  transform:
+    translateY(-4px)
+    scale(1.08);
+
+  background:
+    rgba(255,255,255,.18);
 
   box-shadow:
-    0 14px 28px rgba(0,0,0,0.28);
+    0 0 18px rgba(255,255,255,.24);
 }
 
-.sound-btn:active {
-  transform: scale(0.95);
+/* =========================================
+   🔍 搜尋欄
+========================================= */
+
+.search-box{
+  margin-top:16px;
 }
 
-/* 裝飾星星 */
-.sound-btn::after {
+.search-box input{
 
-  content: "✦";
+  width:100%;
 
-  position: absolute;
+  padding:15px 18px;
 
-  top: 8px;
-  right: 10px;
+  border:none;
+  outline:none;
 
-  font-size: 11px;
+  border-radius:999px;
 
-  opacity: 0.6;
+  color:white;
+  font-size:15px;
+
+  background:
+    rgba(255,255,255,.14);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  backdrop-filter:blur(12px);
+
+  transition:.25s;
 }
 
-/* =========================
+.search-box input::placeholder{
+  color:rgba(255,255,255,.7);
+}
+
+.search-box input:focus{
+
+  background:
+    rgba(255,255,255,.2);
+
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.12);
+}
+
+/* =========================================
+   📂 分類列
+========================================= */
+
+.category-bar{
+
+  display:flex;
+  gap:12px;
+
+  overflow-x:auto;
+
+  padding:
+    4px 2px 2px;
+
+  margin-top:16px;
+}
+
+.category-bar::-webkit-scrollbar{
+  display:none;
+}
+
+.category-btn{
+
+  border:none;
+
+  padding:
+    10px 16px;
+
+  border-radius:999px;
+
+  color:white;
+
+  cursor:pointer;
+
+  white-space:nowrap;
+
+  background:
+    rgba(255,255,255,.1);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  backdrop-filter:blur(10px);
+
+  transition:.25s;
+}
+
+.category-btn.active{
+
+  background:
+    rgba(255,255,255,.22);
+
+  box-shadow:
+    0 0 18px rgba(255,255,255,.14);
+}
+
+.category-btn:hover{
+  transform:translateY(-2px);
+}
+
+/* =========================================
+   🎵 Grid
+========================================= */
+
+.grid{
+
+  padding:18px;
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(auto-fill,minmax(180px,1fr));
+
+  gap:18px;
+}
+
+/* =========================================
+   🎵 Sound Card
+========================================= */
+
+.sound-btn{
+
+  position:relative;
+
+  overflow:hidden;
+
+  border:none;
+
+  min-height:160px;
+
+  border-radius:26px;
+
+  padding:18px;
+
+  text-align:left;
+
+  color:white;
+
+  cursor:pointer;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.18),
+      rgba(255,255,255,.08)
+    );
+
+  backdrop-filter:blur(18px);
+
+  border:
+    1px solid rgba(255,255,255,.14);
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    background .25s ease;
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.22),
+    inset 0 1px 1px rgba(255,255,255,.08);
+}
+
+/* 動態玻璃光 */
+
+.sound-btn::before{
+
+  content:"";
+
+  position:absolute;
+
+  top:0;
+  left:-120%;
+
+  width:80%;
+  height:100%;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent,
+      rgba(255,255,255,.22),
+      transparent
+    );
+
+  transition:.7s;
+}
+
+.sound-btn:hover::before{
+  left:130%;
+}
+
+.sound-btn:hover{
+
+  transform:
+    translateY(-6px)
+    scale(1.02);
+
+  background:
+    rgba(255,255,255,.18);
+
+  box-shadow:
+    0 18px 38px rgba(0,0,0,.28);
+}
+
+.sound-btn:active{
+  transform:scale(.97);
+}
+
+/* 名稱 */
+
+.sound-name{
+
+  font-size:15px;
+  font-weight:600;
+
+  line-height:1.5;
+
+  padding-right:40px;
+}
+
+/* 收藏 */
+
+.favorite{
+
+  position:absolute;
+
+  top:14px;
+  right:14px;
+
+  width:34px;
+  height:34px;
+
+  border:none;
+
+  border-radius:50%;
+
+  color:white;
+
+  cursor:pointer;
+
+  background:
+    rgba(255,255,255,.12);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  transition:.25s;
+}
+
+.favorite:hover{
+  transform:scale(1.1);
+}
+
+.favorite.active{
+
+  background:
+    rgba(255,80,120,.24);
+
+  color:#ff7ca5;
+
+  box-shadow:
+    0 0 18px rgba(255,100,140,.3);
+}
+
+/* 波形 */
+
+.wave{
+
+  position:absolute;
+
+  left:18px;
+  bottom:18px;
+
+  display:flex;
+  align-items:flex-end;
+  gap:4px;
+
+  height:26px;
+}
+
+.wave span{
+
+  width:5px;
+
+  border-radius:999px;
+
+  background:
+    rgba(255,255,255,.85);
+
+  animation:
+    waveAnim 1s infinite ease-in-out;
+}
+
+.wave span:nth-child(2){
+  animation-delay:.15s;
+}
+
+.wave span:nth-child(3){
+  animation-delay:.3s;
+}
+
+.wave span:nth-child(4){
+  animation-delay:.45s;
+}
+
+@keyframes waveAnim{
+
+  0%,100%{
+    height:6px;
+    opacity:.5;
+  }
+
+  50%{
+    height:24px;
+    opacity:1;
+  }
+}
+
+/* =========================================
    📱 手機版
-========================= */
+========================================= */
 
-@media (max-width: 600px) {
+@media(max-width:700px){
 
-  .topbar {
-    margin: 10px;
-    padding: 14px;
+  .topbar{
+    margin:10px;
+    padding:14px;
+    border-radius:22px;
   }
 
-  .topbar h1 {
-    font-size: 22px;
+  .topbar h1{
+    font-size:22px;
   }
 
-  .title-icon {
-    font-size: 24px;
+  .title-icon{
+    font-size:24px;
   }
 
-  .grid {
+  .social-bar{
+    gap:10px;
+  }
+
+  .social-bar a{
+    width:38px;
+    height:38px;
+  }
+
+  .grid{
+
+    padding:14px;
 
     grid-template-columns:
-      repeat(auto-fill, minmax(110px, 1fr));
+      repeat(2,1fr);
+
+    gap:14px;
   }
 
-  .sound-btn {
-    padding: 16px 10px;
-    font-size: 12px;
+  .sound-btn{
+
+    min-height:140px;
+
+    border-radius:20px;
+
+    padding:16px;
+  }
+
+  .sound-name{
+    font-size:13px;
+  }
+
+  .cursor-glow{
+    display:none;
   }
 }
 
@@ -436,21 +733,21 @@ body {
 
 <body>
 
-<!-- =========================
-     🌌 背景幻燈片
-========================= -->
+<!-- ✨ 滑鼠光暈 -->
+<div class="cursor-glow" id="cursorGlow"></div>
 
+<!-- 🌌 背景 -->
 <div class="bg-slideshow" id="slideshow"></div>
 
-<!-- 🌑 深色遮罩 -->
+<!-- 🌑 遮罩 -->
 <div class="bg-overlay"></div>
 
-<!-- ✨ 漂浮粒子 -->
+<!-- ✨ 粒子 -->
 <div class="particles" id="particles"></div>
 
-<!-- =========================
+<!-- =========================================
      🎀 Header
-========================= -->
+========================================= -->
 
 <header class="topbar">
 
@@ -479,9 +776,11 @@ body {
       </a>
 
     </div>
+
   </div>
 
-  <!-- 搜尋欄 -->
+  <!-- 搜尋 -->
+
   <div class="search-box">
 
     <input
@@ -492,11 +791,41 @@ body {
 
   </div>
 
+  <!-- 分類 -->
+
+  <div class="category-bar">
+
+    <button
+      class="category-btn active"
+      data-category="全部">
+      全部
+    </button>
+
+    <button
+      class="category-btn"
+      data-category="迷因">
+      迷因
+    </button>
+
+    <button
+      class="category-btn"
+      data-category="哄睡">
+      哄睡
+    </button>
+
+    <button
+      class="category-btn"
+      data-category="可愛">
+      可愛
+    </button>
+
+  </div>
+
 </header>
 
-<!-- =========================
+<!-- =========================================
      🎵 音效區
-========================= -->
+========================================= -->
 
 <main>
   <div id="soundGrid" class="grid"></div>
@@ -504,47 +833,46 @@ body {
 
 <script>
 
-/* =========================
-   🌌 背景圖片資料
-========================= */
+/* =========================================
+   🌌 背景資料
+========================================= */
 
 const bgImages = [
 
-  "images/casnyaru.png",
-  "images/WINK.png",
+  {
+    url:"images/casnyaru.png",
+    position:"center center"
+  },
 
-  "images/1.jpg",
-  "images/2.png",
-  "images/3.png",
-  "images/4.png",
-  "images/5.png",
-  "images/6.png",
-  "images/7.png",
-  "images/8.png",
-  "images/9.png",
+  {
+    url:"images/WINK.png",
+    position:"center top"
+  },
 
-  "images/10.jpg",
-  "images/11.jpg",
-  "images/12.jpg",
-  "images/13.jpg",
-  "images/14.jpg",
+  {
+    url:"images/1.jpg",
+    position:"center center"
+  },
 
-  "images/oHo.jpg",
+  {
+    url:"images/2.png",
+    position:"50% 20%"
+  },
 
-  "images/IMG_7064.png",
-  "images/IMG_7461.png",
-
-  "images/special1.png"
+  {
+    url:"images/oHo.jpg",
+    position:"center top"
+  }
 ];
 
-/* =========================
+/* =========================================
    🌌 建立背景
-========================= */
+========================================= */
 
 const slideshow =
 document.getElementById("slideshow");
 
-bgImages.forEach((img, index) => {
+bgImages.forEach((img,index)=>{
 
   const div =
   document.createElement("div");
@@ -556,37 +884,42 @@ bgImages.forEach((img, index) => {
   }
 
   div.style.backgroundImage =
-  `url('${img}')`;
+  `url('${img.url}')`;
+
+  div.style.backgroundPosition =
+  img.position;
 
   slideshow.appendChild(div);
 });
 
-/* =========================
+/* =========================================
    🎵 音效資料
-========================= */
+========================================= */
 
 const soundData = [
 
   {
-    name: "歐買嘎都",
-    file: "sounds/歐買嘎都.mp3"
+    name:"歐買嘎都",
+    file:"sounds/歐買嘎都.mp3",
+    category:"迷因"
   },
 
   {
-    name: "喝ㄋㄟㄋㄟ",
-    file: "sounds/杯杯 - 喝ㄋㄟㄋㄟ.mp3"
+    name:"喝ㄋㄟㄋㄟ",
+    file:"sounds/杯杯 - 喝ㄋㄟㄋㄟ.mp3",
+    category:"可愛"
   },
 
   {
-    name: "wake up 哄睡版",
-    file: "sounds/wake up boy - 哄睡版本.mp3"
+    name:"wake up 哄睡版",
+    file:"sounds/wake up boy - 哄睡版本.mp3",
+    category:"哄睡"
   }
-
 ];
 
-/* =========================
+/* =========================================
    🎵 Render
-========================= */
+========================================= */
 
 const grid =
 document.getElementById("soundGrid");
@@ -594,27 +927,62 @@ document.getElementById("soundGrid");
 const searchInput =
 document.getElementById("searchInput");
 
-function renderSounds(filter = "") {
+const categoryBtns =
+document.querySelectorAll(".category-btn");
+
+let currentCategory = "全部";
+
+function renderSounds(filter = ""){
 
   grid.innerHTML = "";
 
   const filtered =
-  soundData.filter(s =>
-    s.name
-    .toLowerCase()
-    .includes(filter.toLowerCase())
-  );
+  soundData.filter(sound => {
 
-  filtered.forEach(sound => {
+    const matchSearch =
+    sound.name
+    .toLowerCase()
+    .includes(filter.toLowerCase());
+
+    const matchCategory =
+    currentCategory === "全部"
+    || sound.category === currentCategory;
+
+    return matchSearch && matchCategory;
+  });
+
+  filtered.forEach(sound=>{
 
     const btn =
     document.createElement("button");
 
     btn.className = "sound-btn";
 
-    btn.textContent = sound.name;
+    btn.innerHTML = `
 
-    btn.onclick = () => {
+      <button class="favorite">
+        <i class="fa-solid fa-heart"></i>
+      </button>
+
+      <div class="sound-name">
+        ${sound.name}
+      </div>
+
+      <div class="wave">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    `;
+
+    /* 播放 */
+
+    btn.addEventListener("click",(e)=>{
+
+      if(
+        e.target.closest(".favorite")
+      ) return;
 
       const audio =
       new Audio(sound.file);
@@ -622,31 +990,70 @@ function renderSounds(filter = "") {
       audio.volume = 1;
 
       audio.play();
-    };
+    });
+
+    /* 收藏 */
+
+    const fav =
+    btn.querySelector(".favorite");
+
+    fav.addEventListener("click",(e)=>{
+
+      e.stopPropagation();
+
+      fav.classList.toggle("active");
+    });
 
     grid.appendChild(btn);
   });
 }
 
+renderSounds();
+
+/* =========================================
+   🔍 搜尋
+========================================= */
+
 searchInput.addEventListener(
   "input",
-  e => {
+  e=>{
     renderSounds(e.target.value);
   }
 );
 
-renderSounds();
+/* =========================================
+   📂 分類
+========================================= */
 
-/* =========================
-   🌌 幻燈片切換
-========================= */
+categoryBtns.forEach(btn=>{
+
+  btn.addEventListener("click",()=>{
+
+    categoryBtns.forEach(b=>
+      b.classList.remove("active")
+    );
+
+    btn.classList.add("active");
+
+    currentCategory =
+    btn.dataset.category;
+
+    renderSounds(
+      searchInput.value
+    );
+  });
+});
+
+/* =========================================
+   🌌 背景切換
+========================================= */
 
 const slides =
 document.querySelectorAll(".bg-slide");
 
 let currentSlide = 0;
 
-function changeSlide() {
+function changeSlide(){
 
   slides[currentSlide]
   .classList.remove("active");
@@ -658,26 +1065,24 @@ function changeSlide() {
   slides[currentSlide]
   .classList.add("active");
 
-  /* 5~10秒隨機切換 */
   const nextTime =
     Math.floor(
       Math.random() * 5000
     ) + 5000;
 
-  setTimeout(changeSlide, nextTime);
+  setTimeout(changeSlide,nextTime);
 }
 
-/* 啟動 */
-setTimeout(changeSlide, 6000);
+setTimeout(changeSlide,6000);
 
-/* =========================
-   ✨ 漂浮粒子
-========================= */
+/* =========================================
+   ✨ 粒子
+========================================= */
 
 const particleContainer =
 document.getElementById("particles");
 
-for(let i = 0; i < 35; i++) {
+for(let i = 0; i < 35; i++){
 
   const particle =
   document.createElement("div");
@@ -702,6 +1107,25 @@ for(let i = 0; i < 35; i++) {
 
   particleContainer.appendChild(particle);
 }
+
+/* =========================================
+   ✨ 滑鼠光暈
+========================================= */
+
+const glow =
+document.getElementById("cursorGlow");
+
+document.addEventListener(
+  "mousemove",
+  e=>{
+
+    glow.style.left =
+    e.clientX + "px";
+
+    glow.style.top =
+    e.clientY + "px";
+  }
+);
 
 </script>
 
