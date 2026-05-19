@@ -45,19 +45,20 @@ body {
   opacity: 0;
 
   transition:
-    opacity 1s ease-in-out;
+    opacity 2s ease-in-out;
 
   transform: scale(1.05);
 
   animation:
     floatingBg 18s ease-in-out infinite;
 
-  /* 背景模糊 */
   filter: blur(1px);
 
-    /* 🔥 防止黑屏 */
-  will-change: opacity;
-   
+  will-change:
+    opacity,
+    transform;
+
+  backface-visibility: hidden;
 }
 
 /* 顯示中的背景 */
@@ -439,75 +440,7 @@ body {
      🌌 背景幻燈片
 ========================= -->
 
-<div class="bg-slideshow">
-
-  <!-- 第一張 -->
-  <div class="bg-slide active"
-  style="background-image:url('images/casnyaru.png')">
-  </div>
-
-  <!-- 第二張 -->
-  <div class="bg-slide"
-  style="background-image:url('images/WINK.png')">
-  </div>
-   
-   <div class="bg-slide"
-  style="background-image:url('images/1.jpg')">
-  </div>
-
-    <div class="bg-slide"
-  style="background-image:url('images/2.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/3.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/4.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/5.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/6.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/7.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/8.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/9.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/10.jpg')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/11.jpg')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/12.jpg')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/13.jpg')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/14.jpg')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/oHo.jpg')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/IMG_7064.png')">
-  </div>
-    <div class="bg-slide"
-  style="background-image:url('images/IMG_7461.png')">
-  </div>
-   <div class="bg-slide"
-  style="background-image:url('images/special1.png')">
-  </div>
-
-</div>
+<div class="bg-slideshow" id="slideshow"></div>
 
 <!-- 🌑 深色遮罩 -->
 <div class="bg-overlay"></div>
@@ -572,6 +505,63 @@ body {
 <script>
 
 /* =========================
+   🌌 背景圖片資料
+========================= */
+
+const bgImages = [
+
+  "images/casnyaru.png",
+  "images/WINK.png",
+
+  "images/1.jpg",
+  "images/2.png",
+  "images/3.png",
+  "images/4.png",
+  "images/5.png",
+  "images/6.png",
+  "images/7.png",
+  "images/8.png",
+  "images/9.png",
+
+  "images/10.jpg",
+  "images/11.jpg",
+  "images/12.jpg",
+  "images/13.jpg",
+  "images/14.jpg",
+
+  "images/oHo.jpg",
+
+  "images/IMG_7064.png",
+  "images/IMG_7461.png",
+
+  "images/special1.png"
+];
+
+/* =========================
+   🌌 建立背景
+========================= */
+
+const slideshow =
+document.getElementById("slideshow");
+
+bgImages.forEach((img, index) => {
+
+  const div =
+  document.createElement("div");
+
+  div.className = "bg-slide";
+
+  if(index === 0){
+    div.classList.add("active");
+  }
+
+  div.style.backgroundImage =
+  `url('${img}')`;
+
+  slideshow.appendChild(div);
+});
+
+/* =========================
    🎵 音效資料
 ========================= */
 
@@ -629,6 +619,8 @@ function renderSounds(filter = "") {
       const audio =
       new Audio(sound.file);
 
+      audio.volume = 1;
+
       audio.play();
     };
 
@@ -665,10 +657,18 @@ function changeSlide() {
 
   slides[currentSlide]
   .classList.add("active");
+
+  /* 5~10秒隨機切換 */
+  const nextTime =
+    Math.floor(
+      Math.random() * 5000
+    ) + 5000;
+
+  setTimeout(changeSlide, nextTime);
 }
 
-/* 🔥 20s切換一次 */
-setInterval(changeSlide, 10000);
+/* 啟動 */
+setTimeout(changeSlide, 6000);
 
 /* =========================
    ✨ 漂浮粒子
