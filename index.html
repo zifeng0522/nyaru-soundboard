@@ -394,66 +394,6 @@ body{
 }
 
 /* =========================================
-   📂 分類列
-========================================= */
-
-.category-bar{
-
-  display:flex;
-  gap:12px;
-
-  overflow-x:auto;
-
-  padding:
-    4px 2px 2px;
-
-  margin-top:16px;
-}
-
-.category-bar::-webkit-scrollbar{
-  display:none;
-}
-
-.category-btn{
-
-  border:none;
-
-  padding:
-    10px 16px;
-
-  border-radius:999px;
-
-  color:white;
-
-  cursor:pointer;
-
-  white-space:nowrap;
-
-  background:
-    rgba(255,255,255,.1);
-
-  border:
-    1px solid rgba(255,255,255,.12);
-
-  backdrop-filter:blur(10px);
-
-  transition:.25s;
-}
-
-.category-btn.active{
-
-  background:
-    rgba(255,255,255,.22);
-
-  box-shadow:
-    0 0 18px rgba(255,255,255,.14);
-}
-
-.category-btn:hover{
-  transform:translateY(-2px);
-}
-
-/* =========================================
    🎵 Grid
 ========================================= */
 
@@ -481,11 +421,11 @@ body{
 
   border:none;
 
-  min-height:160px;
+  min-height:120px;
 
   border-radius:26px;
 
-  padding:18px;
+  padding:20px;
 
   text-align:left;
 
@@ -569,106 +509,6 @@ body{
   font-weight:600;
 
   line-height:1.5;
-
-  padding-right:40px;
-}
-
-/* 收藏 */
-
-.favorite{
-
-  position:absolute;
-
-  top:14px;
-  right:14px;
-
-  width:34px;
-  height:34px;
-
-  border:none;
-
-  border-radius:50%;
-
-  color:white;
-
-  cursor:pointer;
-
-  background:
-    rgba(255,255,255,.12);
-
-  border:
-    1px solid rgba(255,255,255,.12);
-
-  transition:.25s;
-}
-
-.favorite:hover{
-  transform:scale(1.1);
-}
-
-.favorite.active{
-
-  background:
-    rgba(255,80,120,.24);
-
-  color:#ff7ca5;
-
-  box-shadow:
-    0 0 18px rgba(255,100,140,.3);
-}
-
-/* 波形 */
-
-.wave{
-
-  position:absolute;
-
-  left:18px;
-  bottom:18px;
-
-  display:flex;
-  align-items:flex-end;
-  gap:4px;
-
-  height:26px;
-}
-
-.wave span{
-
-  width:5px;
-
-  border-radius:999px;
-
-  background:
-    rgba(255,255,255,.85);
-
-  animation:
-    waveAnim 1s infinite ease-in-out;
-}
-
-.wave span:nth-child(2){
-  animation-delay:.15s;
-}
-
-.wave span:nth-child(3){
-  animation-delay:.3s;
-}
-
-.wave span:nth-child(4){
-  animation-delay:.45s;
-}
-
-@keyframes waveAnim{
-
-  0%,100%{
-    height:6px;
-    opacity:.5;
-  }
-
-  50%{
-    height:24px;
-    opacity:1;
-  }
 }
 
 /* =========================================
@@ -712,7 +552,7 @@ body{
 
   .sound-btn{
 
-    min-height:140px;
+    min-height:110px;
 
     border-radius:20px;
 
@@ -788,36 +628,6 @@ body{
       id="searchInput"
       placeholder="搜尋音效..."
     >
-
-  </div>
-
-  <!-- 分類 -->
-
-  <div class="category-bar">
-
-    <button
-      class="category-btn active"
-      data-category="全部">
-      全部
-    </button>
-
-    <button
-      class="category-btn"
-      data-category="迷因">
-      迷因
-    </button>
-
-    <button
-      class="category-btn"
-      data-category="哄睡">
-      哄睡
-    </button>
-
-    <button
-      class="category-btn"
-      data-category="可愛">
-      可愛
-    </button>
 
   </div>
 
@@ -900,20 +710,17 @@ const soundData = [
 
   {
     name:"歐買嘎都",
-    file:"sounds/歐買嘎都.mp3",
-    category:"迷因"
+    file:"sounds/歐買嘎都.mp3"
   },
 
   {
     name:"喝ㄋㄟㄋㄟ",
-    file:"sounds/杯杯 - 喝ㄋㄟㄋㄟ.mp3",
-    category:"可愛"
+    file:"sounds/杯杯 - 喝ㄋㄟㄋㄟ.mp3"
   },
 
   {
     name:"wake up 哄睡版",
-    file:"sounds/wake up boy - 哄睡版本.mp3",
-    category:"哄睡"
+    file:"sounds/wake up boy - 哄睡版本.mp3"
   }
 ];
 
@@ -927,11 +734,6 @@ document.getElementById("soundGrid");
 const searchInput =
 document.getElementById("searchInput");
 
-const categoryBtns =
-document.querySelectorAll(".category-btn");
-
-let currentCategory = "全部";
-
 function renderSounds(filter = ""){
 
   grid.innerHTML = "";
@@ -939,16 +741,9 @@ function renderSounds(filter = ""){
   const filtered =
   soundData.filter(sound => {
 
-    const matchSearch =
-    sound.name
+    return sound.name
     .toLowerCase()
     .includes(filter.toLowerCase());
-
-    const matchCategory =
-    currentCategory === "全部"
-    || sound.category === currentCategory;
-
-    return matchSearch && matchCategory;
   });
 
   filtered.forEach(sound=>{
@@ -960,29 +755,13 @@ function renderSounds(filter = ""){
 
     btn.innerHTML = `
 
-      <button class="favorite">
-        <i class="fa-solid fa-heart"></i>
-      </button>
-
       <div class="sound-name">
         ${sound.name}
       </div>
 
-      <div class="wave">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
     `;
 
-    /* 播放 */
-
-    btn.addEventListener("click",(e)=>{
-
-      if(
-        e.target.closest(".favorite")
-      ) return;
+    btn.addEventListener("click",()=>{
 
       const audio =
       new Audio(sound.file);
@@ -990,18 +769,6 @@ function renderSounds(filter = ""){
       audio.volume = 1;
 
       audio.play();
-    });
-
-    /* 收藏 */
-
-    const fav =
-    btn.querySelector(".favorite");
-
-    fav.addEventListener("click",(e)=>{
-
-      e.stopPropagation();
-
-      fav.classList.toggle("active");
     });
 
     grid.appendChild(btn);
@@ -1020,29 +787,6 @@ searchInput.addEventListener(
     renderSounds(e.target.value);
   }
 );
-
-/* =========================================
-   📂 分類
-========================================= */
-
-categoryBtns.forEach(btn=>{
-
-  btn.addEventListener("click",()=>{
-
-    categoryBtns.forEach(b=>
-      b.classList.remove("active")
-    );
-
-    btn.classList.add("active");
-
-    currentCategory =
-    btn.dataset.category;
-
-    renderSounds(
-      searchInput.value
-    );
-  });
-});
 
 /* =========================================
    🌌 背景切換
